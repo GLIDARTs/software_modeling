@@ -14,15 +14,16 @@ public class Booking {
   private boolean active;
 
   /**
-   * Creates a booking record.
+   * Creates a booking record. Package-private so only {@link BookingService}
+   * in this package can construct bookings.
    *
    * @param id unique booking id
    * @param user guest
    * @param accommodation place booked
    * @param nights number of nights
-   * @param totalCost cost calculated via polymorphism
+   * @param totalCost cost calculated via polymorphism (GBP, two decimals)
    */
-  public Booking(String id, User user, Accommodation accommodation,
+  Booking(String id, User user, Accommodation accommodation,
       int nights, double totalCost) {
     if (id == null || id.isBlank()) {
       throw new IllegalArgumentException("Booking id must not be empty");
@@ -33,9 +34,7 @@ public class Booking {
     if (accommodation == null) {
       throw new IllegalArgumentException("Accommodation must not be null");
     }
-    if (nights < 1) {
-      throw new IllegalArgumentException("Nights must be at least 1");
-    }
+    Accommodation.requirePositiveNights(nights);
     if (totalCost < 0) {
       throw new IllegalArgumentException("Total cost must not be negative");
     }

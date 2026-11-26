@@ -65,12 +65,14 @@ public class User {
 
   /**
    * Removes loyalty points when a booking is cancelled. Package-private.
+   * Never throws: non-positive amounts are ignored, and the balance never
+   * drops below zero, so release can reclaim points safely after cancel.
    *
-   * @param points points to remove (must be non-negative)
+   * @param points points to remove
    */
   void removePoints(int points) {
-    if (points < 0) {
-      throw new IllegalArgumentException("Points to remove must not be negative");
+    if (points <= 0) {
+      return;
     }
     loyaltyPoints -= points;
     if (loyaltyPoints < 0) {

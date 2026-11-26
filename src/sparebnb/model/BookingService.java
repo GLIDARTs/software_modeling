@@ -8,6 +8,9 @@ import java.util.List;
  * Control class that runs booking, release, and loyalty awarding.
  * Same package as the model so it can call package-private mutators.
  * Same role as the lecturer's EnrollmentControl example.
+ *
+ * <p>Money amounts are {@code double} for this educational prototype only.
+ * Totals are rounded to two decimal places when a booking is created.
  */
 public class BookingService {
 
@@ -25,6 +28,10 @@ public class BookingService {
   /**
    * Books an available place for a guest and awards loyalty points.
    *
+   * <p>Cost is calculated before the state change. If anything fails after
+   * the place becomes Booked, the place is rolled back to Available so the
+   * catalogue is not left half-updated.
+   *
    * @param user guest
    * @param accommodation place to book
    * @param nights number of nights
@@ -39,24 +46,34 @@ public class BookingService {
     if (accommodation == null) {
       throw new IllegalArgumentException("Accommodation must not be null");
     }
-    if (nights < 1) {
-      throw new IllegalArgumentException("Nights must be at least 1");
-    }
+    Accommodation.requirePositiveNights(nights);
 
-    // State change first; if this throws, no booking or points are created.
+    // Fail fast on cost before touching availability state.
+    double cost = roundMoney(accommodation.calculateCost(nights));
     accommodation.book(user, nights);
 
-    double cost = accommodation.calculateCost(nights);
-    Booking booking = new Booking(nextBookingId(), user, accommodation, nights, cost);
-    bookings.add(booking);
-    user.addBooking(booking);
-    user.addPoints(POINTS_PER_NIGHT * nights);
-    return booking;
+    try {
+      Booking booking = new Booking(nextBookingId(), user, accommodation, nights, cost);
+      bookings.add(booking);
+      user.addBooking(booking);
+      user.addPoints(POINTS_PER_NIGHT * nights);
+      return booking;
+    } catch (RuntimeException ex) {
+      // Roll back Booked → Available if the booking record could not be completed.
+      if ("Booked".equals(accommodation.getStatusName())) {
+        accommodation.changeState(new AvailableState());
+      }
+      throw ex;
+    }
   }
 
   /**
    * Cancels an active booking, releases the accommodation (to Cleaning),
    * and removes the loyalty points that were awarded for that booking.
+   *
+   * <p>Place release runs first. Cancel and point reclaim run only after a
+   * successful release. Point reclaim never throws for a non-negative amount,
+   * so an active booking is not left cancelled without reclaiming points.
    *
    * @param booking booking to cancel
    * @throws IllegalArgumentException if booking is null
@@ -70,10 +87,11 @@ public class BookingService {
       throw new IllegalStateException(
           "Booking " + booking.getId() + " is already cancelled");
     }
+    int pointsToRemove = POINTS_PER_NIGHT * booking.getNights();
     // Release place first so a failure leaves the booking still active.
     booking.getAccommodation().release();
     booking.cancel();
-    booking.getUser().removePoints(POINTS_PER_NIGHT * booking.getNights());
+    booking.getUser().removePoints(pointsToRemove);
   }
 
   /** Returns an unmodifiable list of all bookings known to this service. */
@@ -83,5 +101,10 @@ public class BookingService {
 
   private String nextBookingId() {
     return String.format("BK-%03d", nextBookingNumber++);
+  }
+
+  /** Rounds to two decimal places for display-stable GBP totals. */
+  private static double roundMoney(double amount) {
+    return Math.round(amount * 100.0) / 100.0;
   }
 }

@@ -7,3 +7,7 @@ lint.txt
 .venv/
 
 __pycache__/
+
+*.zip
+SpareBnB_V*.zip
+SpareBnB_codebase.zip

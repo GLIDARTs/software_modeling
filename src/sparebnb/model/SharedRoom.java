@@ -33,9 +33,7 @@ public class SharedRoom extends Accommodation {
 
   @Override
   public double calculateCost(int nights) {
-    if (nights < 1) {
-      throw new IllegalArgumentException("Nights must be at least 1");
-    }
+    requirePositiveNights(nights);
     return getPricePerNight() * nights * SHARED_DISCOUNT;
   }
 

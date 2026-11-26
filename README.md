@@ -8,7 +8,6 @@ Console prototype for Sprint 1-2: guests book accommodation; hosts finish cleani
 - `src/sparebnb/model/` - domain types, State classes, `BookingService` (control)
 - `src/sparebnb/factory/` - Factory pattern (typed create methods)
 - `diagrams/` - PlantUML (use case, class, sequence, state machine)
-- `report/` - Sprint 2 report draft
 
 ## Compile and run (PowerShell)
 

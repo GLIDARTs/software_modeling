@@ -41,6 +41,9 @@ public class Host {
     if (accommodation == null) {
       throw new IllegalArgumentException("Accommodation must not be null");
     }
+    if (listings.contains(accommodation)) {
+      return;
+    }
     listings.add(accommodation);
   }
 

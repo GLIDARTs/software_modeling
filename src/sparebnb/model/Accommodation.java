@@ -7,7 +7,11 @@ import java.util.List;
 /**
  * Base type for every kind of place a guest can book.
  * Abstract because a generic accommodation should never be created.
- * Prices use {@code double} for simplicity in this educational prototype.
+ *
+ * <p>Prices use {@code double} for this educational prototype only.
+ * Production code would use a money type (for example minor units or
+ * {@code BigDecimal}). {@link BookingService} rounds totals to two decimals
+ * when a booking is stored.
  */
 public abstract class Accommodation implements Bookable {
 
@@ -97,10 +101,20 @@ public abstract class Accommodation implements Bookable {
     if (user == null) {
       throw new IllegalArgumentException("User must not be null");
     }
+    requirePositiveNights(nights);
+    state.book(this, user, nights);
+  }
+
+  /**
+   * Shared nights validation used by cost calculations and booking paths.
+   *
+   * @param nights number of nights
+   * @throws IllegalArgumentException if nights is less than 1
+   */
+  protected static void requirePositiveNights(int nights) {
     if (nights < 1) {
       throw new IllegalArgumentException("Nights must be at least 1");
     }
-    state.book(this, user, nights);
   }
 
   /**
@@ -178,13 +192,18 @@ public abstract class Accommodation implements Bookable {
   }
 
   /**
-   * Adds a facility to this accommodation.
+   * Adds a facility to this accommodation. Package-private so only same-package
+   * setup code can mutate facilities after construction; callers normally pass
+   * facilities through the factory.
    *
    * @param facility facility to aggregate
    */
-  public void addFacility(Facility facility) {
+  void addFacility(Facility facility) {
     if (facility == null) {
       throw new IllegalArgumentException("Facility must not be null");
+    }
+    if (facilities.contains(facility)) {
+      return;
     }
     facilities.add(facility);
   }

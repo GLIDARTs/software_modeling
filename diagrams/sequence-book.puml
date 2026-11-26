@@ -15,6 +15,11 @@ activate Main
 Main -> Service : book(user, accommodation, nights)
 activate Service
 
+Service -> Acc : calculateCost(nights)
+activate Acc
+Acc --> Service : cost
+deactivate Acc
+
 Service -> Acc : book(user, nights)
 activate Acc
 Acc -> State : book(accommodation, user, nights)
@@ -25,11 +30,6 @@ alt Available
   State --> Acc : void
   deactivate State
   Acc --> Service : void
-  deactivate Acc
-
-  Service -> Acc : calculateCost(nights)
-  activate Acc
-  Acc --> Service : cost
   deactivate Acc
 
   Service -> Booking : <<create>> new Booking(...)

@@ -30,9 +30,7 @@ public class HotelRoom extends Accommodation {
 
   @Override
   public double calculateCost(int nights) {
-    if (nights < 1) {
-      throw new IllegalArgumentException("Nights must be at least 1");
-    }
+    requirePositiveNights(nights);
     double total = getPricePerNight() * nights;
     if (breakfastIncluded) {
       total += BREAKFAST_PER_NIGHT * nights;

@@ -11,13 +11,16 @@ import sparebnb.model.Villa;
 /**
  * Creates accommodation subtypes in one place so callers depend only on
  * {@link Accommodation}. Typed create methods keep compile-time safety.
+ *
+ * <p>Each factory instance owns its own id sequence so repeated demos in the
+ * same JVM do not keep climbing forever from a shared static counter.
  */
-public final class AccommodationFactory {
+public class AccommodationFactory {
 
-  private static int nextId = 1;
+  private int nextId = 1;
 
-  private AccommodationFactory() {
-    // utility class
+  /** Creates a factory with ids starting at ACC-001. */
+  public AccommodationFactory() {
   }
 
   /**
@@ -31,7 +34,7 @@ public final class AccommodationFactory {
    * @param floorNumber floor of the apartment
    * @return new apartment as Accommodation
    */
-  public static Accommodation createApartment(String name, String location,
+  public Accommodation createApartment(String name, String location,
       double pricePerNight, int maxGuests, List<Facility> facilities,
       int floorNumber) {
     return new Apartment(nextId(), name, location, pricePerNight, maxGuests,
@@ -49,7 +52,7 @@ public final class AccommodationFactory {
    * @param hasPool whether the villa has a pool
    * @return new villa as Accommodation
    */
-  public static Accommodation createVilla(String name, String location,
+  public Accommodation createVilla(String name, String location,
       double pricePerNight, int maxGuests, List<Facility> facilities,
       boolean hasPool) {
     return new Villa(nextId(), name, location, pricePerNight, maxGuests,
@@ -67,7 +70,7 @@ public final class AccommodationFactory {
    * @param breakfastIncluded whether breakfast is included
    * @return new hotel room as Accommodation
    */
-  public static Accommodation createHotelRoom(String name, String location,
+  public Accommodation createHotelRoom(String name, String location,
       double pricePerNight, int maxGuests, List<Facility> facilities,
       boolean breakfastIncluded) {
     return new HotelRoom(nextId(), name, location, pricePerNight, maxGuests,
@@ -85,14 +88,14 @@ public final class AccommodationFactory {
    * @param bedsInRoom number of beds in the room
    * @return new shared room as Accommodation
    */
-  public static Accommodation createSharedRoom(String name, String location,
+  public Accommodation createSharedRoom(String name, String location,
       double pricePerNight, int maxGuests, List<Facility> facilities,
       int bedsInRoom) {
     return new SharedRoom(nextId(), name, location, pricePerNight, maxGuests,
         facilities, bedsInRoom);
   }
 
-  private static String nextId() {
+  private String nextId() {
     return String.format("ACC-%03d", nextId++);
   }
 }

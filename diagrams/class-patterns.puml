@@ -10,11 +10,11 @@ package "sparebnb" {
 
 package "sparebnb.factory" {
   class AccommodationFactory {
-    - {static} nextId: int
-    + {static} createApartment(...): Accommodation
-    + {static} createVilla(...): Accommodation
-    + {static} createHotelRoom(...): Accommodation
-    + {static} createSharedRoom(...): Accommodation
+    - nextId: int
+    + createApartment(...): Accommodation
+    + createVilla(...): Accommodation
+    + createHotelRoom(...): Accommodation
+    + createSharedRoom(...): Accommodation
   }
 }
 

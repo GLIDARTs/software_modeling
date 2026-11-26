@@ -32,10 +32,11 @@ public class Main {
     Facility kitchen = new Facility("Kitchen");
     Facility pool = new Facility("Pool");
 
-    Accommodation riversideApt = AccommodationFactory.createApartment("Riverside Flat", "London", 95.0, 3, Arrays.asList(wifi, kitchen), 4);
-    Accommodation seaViewVilla = AccommodationFactory.createVilla("Sea View Villa", "Brighton", 180.0, 6, Arrays.asList(wifi, parking, pool), true);
-    Accommodation cityHotel = AccommodationFactory.createHotelRoom("City Centre Room", "Manchester", 110.0, 2, Arrays.asList(wifi), true);
-    Accommodation hostelBunk = AccommodationFactory.createSharedRoom("Canal Hostel Bunk", "Birmingham", 40.0, 1, Arrays.asList(wifi), 6);
+    AccommodationFactory factory = new AccommodationFactory();
+    Accommodation riversideApt = factory.createApartment("Riverside Flat", "London", 95.0, 3, Arrays.asList(wifi, kitchen), 4);
+    Accommodation seaViewVilla = factory.createVilla("Sea View Villa", "Brighton", 180.0, 6, Arrays.asList(wifi, parking, pool), true);
+    Accommodation cityHotel = factory.createHotelRoom("City Centre Room", "Manchester", 110.0, 2, Arrays.asList(wifi), true);
+    Accommodation hostelBunk = factory.createSharedRoom("Canal Hostel Bunk", "Birmingham", 40.0, 1, Arrays.asList(wifi), 6);
 
     List<Accommodation> catalogue = Arrays.asList(
         riversideApt, seaViewVilla, cityHotel, hostelBunk);

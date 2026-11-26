@@ -3,3 +3,7 @@ out/
 .vscode/
 
 lint.txt
+
+.venv/
+
+__pycache__/

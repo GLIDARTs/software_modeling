@@ -3,14 +3,13 @@ package sparebnb;
 import java.util.Arrays;
 import java.util.List;
 import sparebnb.factory.AccommodationFactory;
-import sparebnb.factory.AccommodationType;
 import sparebnb.model.Accommodation;
 import sparebnb.model.AccommodationUnavailableException;
 import sparebnb.model.Booking;
 import sparebnb.model.Facility;
 import sparebnb.model.Host;
 import sparebnb.model.User;
-import sparebnb.service.BookingService;
+import sparebnb.model.BookingService;
 
 /**
  * Console demo for SpareB&amp;B Sprint 1-2.
@@ -33,18 +32,10 @@ public class Main {
     Facility kitchen = new Facility("Kitchen");
     Facility pool = new Facility("Pool");
 
-    Accommodation riversideApt = AccommodationFactory.create(
-        AccommodationType.APARTMENT, "Riverside Flat", "London",
-        95.0, 3, Arrays.asList(wifi, kitchen), 4);
-    Accommodation seaViewVilla = AccommodationFactory.create(
-        AccommodationType.VILLA, "Sea View Villa", "Brighton",
-        180.0, 6, Arrays.asList(wifi, parking, pool), true);
-    Accommodation cityHotel = AccommodationFactory.create(
-        AccommodationType.HOTEL_ROOM, "City Centre Room", "Manchester",
-        110.0, 2, Arrays.asList(wifi), true);
-    Accommodation hostelBunk = AccommodationFactory.create(
-        AccommodationType.SHARED_ROOM, "Canal Hostel Bunk", "Birmingham",
-        40.0, 1, Arrays.asList(wifi), 6);
+    Accommodation riversideApt = AccommodationFactory.createApartment("Riverside Flat", "London", 95.0, 3, Arrays.asList(wifi, kitchen), 4);
+    Accommodation seaViewVilla = AccommodationFactory.createVilla("Sea View Villa", "Brighton", 180.0, 6, Arrays.asList(wifi, parking, pool), true);
+    Accommodation cityHotel = AccommodationFactory.createHotelRoom("City Centre Room", "Manchester", 110.0, 2, Arrays.asList(wifi), true);
+    Accommodation hostelBunk = AccommodationFactory.createSharedRoom("Canal Hostel Bunk", "Birmingham", 40.0, 1, Arrays.asList(wifi), 6);
 
     List<Accommodation> catalogue = Arrays.asList(
         riversideApt, seaViewVilla, cityHotel, hostelBunk);

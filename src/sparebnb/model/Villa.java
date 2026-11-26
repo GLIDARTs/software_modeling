@@ -48,7 +48,7 @@ public class Villa extends Accommodation {
             : " (no pool, +GBP 75 cleaning fee)");
   }
 
-  /** @return true if the villa has a pool */
+  /** Returns true if the villa has a pool. */
   public boolean hasPool() {
     return hasPool;
   }

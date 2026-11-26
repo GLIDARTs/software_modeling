@@ -50,7 +50,7 @@ public class SharedRoom extends Accommodation {
         + String.format(" (%d beds, 15%% shared discount)", bedsInRoom);
   }
 
-  /** @return number of beds in the room */
+  /** Returns the number of beds in the room. */
   public int getBedsInRoom() {
     return bedsInRoom;
   }

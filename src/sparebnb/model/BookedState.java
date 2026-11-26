@@ -1,31 +1,27 @@
-package sparebnb.state;
-
-import sparebnb.model.Accommodation;
-import sparebnb.model.AccommodationUnavailableException;
-import sparebnb.model.User;
+package sparebnb.model;
 
 /**
- * State after a booking is released, before the host finishes cleaning.
+ * State in which the accommodation is held by a guest.
  */
-public class CleaningState implements AccommodationState {
+public class BookedState implements AccommodationState {
 
   @Override
   public void book(Accommodation accommodation, User user, int nights) {
     String guestName = user == null ? "Guest" : user.getName();
     throw new AccommodationUnavailableException(
         "Sorry " + guestName + ", " + accommodation.getName()
-            + " is being cleaned and is not ready to book yet.");
+            + " is already booked.");
   }
 
   @Override
   public void release(Accommodation accommodation) {
-    throw new IllegalStateException(
-        accommodation.getName() + " is already being cleaned.");
+    accommodation.changeState(new CleaningState());
   }
 
   @Override
   public void finishCleaning(Accommodation accommodation) {
-    accommodation.changeState(new AvailableState());
+    throw new IllegalStateException(
+        accommodation.getName() + " is booked, so cleaning cannot be finished yet.");
   }
 
   @Override
@@ -35,6 +31,6 @@ public class CleaningState implements AccommodationState {
 
   @Override
   public String getName() {
-    return "Cleaning";
+    return "Booked";
   }
 }

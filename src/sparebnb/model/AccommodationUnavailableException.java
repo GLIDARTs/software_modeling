@@ -5,6 +5,8 @@ package sparebnb.model;
  */
 public class AccommodationUnavailableException extends RuntimeException {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * Creates an exception with a guest-friendly message.
    *

@@ -53,7 +53,7 @@ public class HotelRoom extends Accommodation {
             : " (breakfast not included)");
   }
 
-  /** @return true if breakfast is included */
+  /** Returns true if breakfast is included. */
   public boolean isBreakfastIncluded() {
     return breakfastIncluded;
   }

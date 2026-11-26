@@ -17,7 +17,7 @@ public class Host {
   /**
    * Creates a host with fictitious demo details.
    *
-   * @param id   unique id
+   * @param id unique id
    * @param name display name
    */
   public Host(String id, String name) {
@@ -62,7 +62,7 @@ public class Host {
   }
 
   /**
-   * Prints status of every managed listing (US12).
+   * Builds a status summary of every managed listing (US12).
    *
    * @return formatted status lines
    */
@@ -76,17 +76,17 @@ public class Host {
     return sb.toString();
   }
 
-  /** @return unique id */
+  /** Returns the unique id. */
   public String getId() {
     return id;
   }
 
-  /** @return host name */
+  /** Returns the host name. */
   public String getName() {
     return name;
   }
 
-  /** @return unmodifiable view of managed listings */
+  /** Returns an unmodifiable view of managed listings. */
   public List<Accommodation> getListings() {
     return Collections.unmodifiableList(listings);
   }

@@ -21,7 +21,7 @@ public class Facility {
     this.name = name.trim();
   }
 
-  /** @return the facility name */
+  /** Returns the facility name. */
   public String getName() {
     return name;
   }

@@ -1,4 +1,4 @@
-﻿# SpareB&B — Sprint 1 & 2 Report (Draft)
+# SpareB&B — Sprint 1 & 2 Report (Draft)
 
 **Module:** CMPN222 Software Modelling  
 **Word limit:** max ~1500 words / 5 pages (diagrams as PNGs do not count toward words)  
@@ -51,11 +51,11 @@ Guest is the primary actor. Host is a secondary actor for Finish Cleaning and Vi
 See `diagrams/class-model.puml` and `diagrams/class-patterns.puml` (split for readability). Facility is aggregation (hollow diamond); current state is composition (filled diamond).
 
 **Abstraction:** `Accommodation` is abstract — a generic place has no real price rule.  
-**Encapsulation:** private fields; status changes only via `book` / `release` / `finishCleaning`; constructors validate; list getters return unmodifiable views.  
+**Encapsulation:** private fields; `book` / `release` / `finishCleaning` / `changeState` / `Booking.cancel` / loyalty mutators are package-private in `model`, so only `BookingService` and `Host` can drive those rules; constructors validate; list getters return unmodifiable views. Prices use `double` for educational simplicity.
 **Inheritance:** `Apartment`, `Villa`, `HotelRoom`, `SharedRoom` extend `Accommodation`.  
 **Polymorphism:** (1) subclasses override `calculateCost` / `describe`; (2) `state.book(this)` behaves differently per state.  
-**Interface:** `Bookable` separates the booking contract from what an accommodation is.  
-**Relationships:** aggregation Facility; composition current state; associations for Booking–User–Accommodation and Host manages listings; Main *uses* service/factory (dependency). Objects are stored, not ids. `BookingService` is the control class.
+**Interface:** `Bookable` exposes availability (`isAvailable`); full booking transactions go through `BookingService`.
+**Relationships:** aggregation Facility; composition current state; associations for Booking–User–Accommodation and Host manages listings; Main *uses* service/factory (dependency). Objects are stored, not ids. `BookingService` is the control class and lives in `model` with the entities it coordinates.
 
 ---
 
@@ -69,8 +69,8 @@ See `diagrams/sequence-book.puml`, drawn for user story US3 following the six-st
 
 **Factory**  
 User story: As a system maintainer, I want new accommodation types added in one place so that client code does not need to change.  
-Pattern: Factory (`AccommodationFactory` + `AccommodationType`).  
-Motivation: callers depend on `Accommodation`; adding a type (e.g. Cabin) changes one switch.
+Pattern: Factory (`AccommodationFactory` with typed methods such as `createVilla`).  
+Motivation: callers depend on `Accommodation`; type-specific parameters stay compile-time safe; adding a type means adding one factory method in one class.
 
 **State**  
 User stories: US4, US9, US11.  

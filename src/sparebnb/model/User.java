@@ -18,8 +18,8 @@ public class User {
   /**
    * Creates a guest with fictitious demo details.
    *
-   * @param id    unique id
-   * @param name  display name
+   * @param id unique id
+   * @param name display name
    * @param email contact email
    */
   public User(String id, String name, String email) {
@@ -40,11 +40,11 @@ public class User {
   }
 
   /**
-   * Adds a booking to this guest's list. Called by BookingService.
+   * Adds a booking to this guest's list. Package-private for BookingService.
    *
    * @param booking booking to attach
    */
-  public void addBooking(Booking booking) {
+  void addBooking(Booking booking) {
     if (booking == null) {
       throw new IllegalArgumentException("Booking must not be null");
     }
@@ -52,11 +52,11 @@ public class User {
   }
 
   /**
-   * Stores loyalty points awarded by BookingService.
+   * Stores loyalty points awarded by BookingService. Package-private.
    *
    * @param points points to add (must be non-negative)
    */
-  public void addPoints(int points) {
+  void addPoints(int points) {
     if (points < 0) {
       throw new IllegalArgumentException("Points to add must not be negative");
     }
@@ -64,11 +64,11 @@ public class User {
   }
 
   /**
-   * Removes loyalty points when a booking is cancelled.
+   * Removes loyalty points when a booking is cancelled. Package-private.
    *
    * @param points points to remove (must be non-negative)
    */
-  public void removePoints(int points) {
+  void removePoints(int points) {
     if (points < 0) {
       throw new IllegalArgumentException("Points to remove must not be negative");
     }
@@ -78,27 +78,27 @@ public class User {
     }
   }
 
-  /** @return unique id */
+  /** Returns the unique id. */
   public String getId() {
     return id;
   }
 
-  /** @return guest name */
+  /** Returns the guest name. */
   public String getName() {
     return name;
   }
 
-  /** @return email */
+  /** Returns the email address. */
   public String getEmail() {
     return email;
   }
 
-  /** @return unmodifiable view of this guest's bookings */
+  /** Returns an unmodifiable view of this guest's bookings. */
   public List<Booking> getBookings() {
     return Collections.unmodifiableList(bookings);
   }
 
-  /** @return current loyalty points */
+  /** Returns the current loyalty points. */
   public int getLoyaltyPoints() {
     return loyaltyPoints;
   }

@@ -1,7 +1,4 @@
-package sparebnb.state;
-
-import sparebnb.model.Accommodation;
-import sparebnb.model.User;
+package sparebnb.model;
 
 /**
  * State in which a guest may book the accommodation.

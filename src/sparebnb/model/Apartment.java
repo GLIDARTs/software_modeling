@@ -47,7 +47,7 @@ public class Apartment extends Accommodation {
     return super.describe() + String.format(" (floor %d)", floorNumber);
   }
 
-  /** @return floor number */
+  /** Returns the floor number. */
   public int getFloorNumber() {
     return floorNumber;
   }

@@ -16,11 +16,11 @@ public class Booking {
   /**
    * Creates a booking record.
    *
-   * @param id             unique booking id
-   * @param user           guest
-   * @param accommodation  place booked
-   * @param nights         number of nights
-   * @param totalCost      cost calculated via polymorphism
+   * @param id unique booking id
+   * @param user guest
+   * @param accommodation place booked
+   * @param nights number of nights
+   * @param totalCost cost calculated via polymorphism
    */
   public Booking(String id, User user, Accommodation accommodation,
       int nights, double totalCost) {
@@ -48,42 +48,42 @@ public class Booking {
   }
 
   /**
-   * Marks this booking cancelled. Does not change accommodation state;
-   * BookingService coordinates release.
+   * Marks this booking cancelled. Package-private so only BookingService
+   * can cancel as part of a coordinated release.
    */
-  public void cancel() {
+  void cancel() {
     if (!active) {
       throw new IllegalStateException("Booking " + id + " is already cancelled");
     }
     active = false;
   }
 
-  /** @return booking id */
+  /** Returns the booking id. */
   public String getId() {
     return id;
   }
 
-  /** @return guest */
+  /** Returns the guest. */
   public User getUser() {
     return user;
   }
 
-  /** @return place */
+  /** Returns the booked place. */
   public Accommodation getAccommodation() {
     return accommodation;
   }
 
-  /** @return nights */
+  /** Returns the number of nights. */
   public int getNights() {
     return nights;
   }
 
-  /** @return total cost */
+  /** Returns the total cost. */
   public double getTotalCost() {
     return totalCost;
   }
 
-  /** @return true if the booking is still active */
+  /** Returns true if the booking is still active. */
   public boolean isActive() {
     return active;
   }

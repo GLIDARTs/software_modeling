@@ -3,12 +3,11 @@ package sparebnb.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import sparebnb.state.AccommodationState;
-import sparebnb.state.AvailableState;
 
 /**
  * Base type for every kind of place a guest can book.
  * Abstract because a generic accommodation should never be created.
+ * Prices use {@code double} for simplicity in this educational prototype.
  */
 public abstract class Accommodation implements Bookable {
 
@@ -23,12 +22,12 @@ public abstract class Accommodation implements Bookable {
   /**
    * Creates an accommodation with shared fields.
    *
-   * @param id            unique id
-   * @param name          display name
-   * @param location      city or area
+   * @param id unique id
+   * @param name display name
+   * @param location city or area
    * @param pricePerNight price greater than zero
-   * @param maxGuests     maximum guests (at least 1)
-   * @param facilities    facilities to aggregate (may be empty)
+   * @param maxGuests maximum guests (at least 1)
+   * @param facilities facilities to aggregate (may be empty)
    */
   protected Accommodation(String id, String name, String location,
       double pricePerNight, int maxGuests, List<Facility> facilities) {
@@ -87,16 +86,28 @@ public abstract class Accommodation implements Bookable {
         getStatusName());
   }
 
-  @Override
-  public void book(User user, int nights) {
+  /**
+   * Attempts to book this place. Package-private so only BookingService
+   * in this package can start a booking transaction.
+   *
+   * @param user the guest making the booking
+   * @param nights number of nights (must be positive)
+   */
+  void book(User user, int nights) {
+    if (user == null) {
+      throw new IllegalArgumentException("User must not be null");
+    }
     if (nights < 1) {
       throw new IllegalArgumentException("Nights must be at least 1");
     }
     state.book(this, user, nights);
   }
 
-  @Override
-  public void release() {
+  /**
+   * Releases a booking so the place moves toward Cleaning.
+   * Package-private for BookingService.
+   */
+  void release() {
     state.release(this);
   }
 
@@ -106,61 +117,63 @@ public abstract class Accommodation implements Bookable {
   }
 
   /**
-   * Called by the host after cleaning is complete.
+   * Called after cleaning is complete. Package-private so only Host
+   * in this package can finish cleaning.
    */
-  public void finishCleaning() {
+  void finishCleaning() {
     state.finishCleaning(this);
   }
 
   /**
-   * Used by state classes to replace the current state (composition lifecycle).
+   * Replaces the current state. Package-private so only state classes
+   * in this package can call it.
    *
    * @param newState next state instance owned by this accommodation
    */
-  public void changeState(AccommodationState newState) {
+  void changeState(AccommodationState newState) {
     if (newState == null) {
       throw new IllegalArgumentException("State must not be null");
     }
     this.state = newState;
   }
 
-  /** @return unique id */
+  /** Returns the unique id. */
   public String getId() {
     return id;
   }
 
-  /** @return display name */
+  /** Returns the display name. */
   public String getName() {
     return name;
   }
 
-  /** @return location */
+  /** Returns the location. */
   public String getLocation() {
     return location;
   }
 
-  /** @return price per night */
+  /** Returns the price per night. */
   public double getPricePerNight() {
     return pricePerNight;
   }
 
-  /** @return maximum guests */
+  /** Returns the maximum number of guests. */
   public int getMaxGuests() {
     return maxGuests;
   }
 
-  /** @return unmodifiable view of facilities */
+  /** Returns an unmodifiable view of the facilities. */
   public List<Facility> getFacilities() {
     return Collections.unmodifiableList(facilities);
   }
 
-  /** @return current status name (Available, Booked, Cleaning) */
+  /** Returns the current status name (Available, Booked, or Cleaning). */
   public String getStatusName() {
     return state.getName();
   }
 
-  /** @return current state object */
-  public AccommodationState getState() {
+  /** Returns the current state object. */
+  AccommodationState getState() {
     return state;
   }
 

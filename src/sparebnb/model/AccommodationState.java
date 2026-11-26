@@ -1,10 +1,8 @@
-package sparebnb.state;
-
-import sparebnb.model.Accommodation;
-import sparebnb.model.User;
+package sparebnb.model;
 
 /**
- * Behaviour of an accommodation in one lifecycle state (Available, Booked, Cleaning).
+ * Behaviour of an accommodation in one lifecycle state
+ * (Available, Booked, Cleaning).
  */
 public interface AccommodationState {
 
@@ -12,8 +10,8 @@ public interface AccommodationState {
    * Handles a book request for the given accommodation.
    *
    * @param accommodation the place whose state this is
-   * @param user          the guest trying to book
-   * @param nights        number of nights
+   * @param user the guest trying to book
+   * @param nights number of nights
    */
   void book(Accommodation accommodation, User user, int nights);
 
@@ -31,9 +29,9 @@ public interface AccommodationState {
    */
   void finishCleaning(Accommodation accommodation);
 
-  /** @return true if guests may book in this state */
+  /** Returns true if guests may book in this state. */
   boolean isAvailable();
 
-  /** @return display name such as "Available", "Booked", or "Cleaning" */
+  /** Returns the display name such as Available, Booked, or Cleaning. */
   String getName();
 }

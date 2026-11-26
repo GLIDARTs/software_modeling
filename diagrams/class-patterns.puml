@@ -8,7 +8,17 @@ package "sparebnb" {
   }
 }
 
-package "sparebnb.service" {
+package "sparebnb.factory" {
+  class AccommodationFactory {
+    - {static} nextId: int
+    + {static} createApartment(...): Accommodation
+    + {static} createVilla(...): Accommodation
+    + {static} createHotelRoom(...): Accommodation
+    + {static} createSharedRoom(...): Accommodation
+  }
+}
+
+package "sparebnb.model" {
   class BookingService {
     - bookings: List<Booking>
     - nextBookingNumber: int
@@ -16,38 +26,20 @@ package "sparebnb.service" {
     + release(booking: Booking): void
     + getBookings(): List<Booking>
   }
-}
 
-package "sparebnb.factory" {
-  class AccommodationFactory {
-    - {static} nextId: int
-    + {static} create(...): Accommodation
-  }
-
-  enum AccommodationType {
-    APARTMENT
-    VILLA
-    HOTEL_ROOM
-    SHARED_ROOM
-  }
-}
-
-package "sparebnb.model" {
   abstract class Accommodation {
     - state: AccommodationState
-    + book(user: User, nights: int): void
-    + release(): void
-    + finishCleaning(): void
-    + changeState(newState: AccommodationState): void
+    ~ book(user: User, nights: int): void
+    ~ release(): void
+    ~ finishCleaning(): void
+    ~ changeState(newState: AccommodationState): void
+    + isAvailable(): boolean
   }
 
-  class Booking
-  class User
-  class Host
-  class AccommodationUnavailableException
-}
+  interface Bookable {
+    + isAvailable(): boolean
+  }
 
-package "sparebnb.state" {
   interface AccommodationState {
     + book(a: Accommodation, user: User, nights: int): void
     + release(a: Accommodation): void
@@ -59,17 +51,31 @@ package "sparebnb.state" {
   class AvailableState
   class BookedState
   class CleaningState
+
+  class Booking {
+    ~ cancel(): void
+  }
+  class User {
+    ~ addBooking(booking: Booking): void
+    ~ addPoints(points: int): void
+    ~ removePoints(points: int): void
+  }
+  class Host {
+    + finishCleaning(a: Accommodation): void
+  }
+  class AccommodationUnavailableException
 }
 
+Accommodation ..|> Bookable
 AvailableState ..|> AccommodationState
 BookedState ..|> AccommodationState
 CleaningState ..|> AccommodationState
 
-' COMPOSITION (filled diamond): current state belongs to this accommodation
 Accommodation "1" *-- "1" AccommodationState : has current >
 note on link
-  Composition (filled diamond):
-  state object lifecycle owned by Accommodation
+  Composition. changeState / book / release /
+  finishCleaning are package-private (~).
+  BookingService and Host live in model too.
 end note
 
 BookingService "1" --> "0..*" Booking : tracks >
@@ -83,7 +89,6 @@ Main ..> Host : uses
 Main ..> User : uses
 Main ..> Accommodation : uses
 
-AccommodationFactory ..> AccommodationType : uses
 AccommodationFactory ..> Accommodation : creates
 
 @enduml

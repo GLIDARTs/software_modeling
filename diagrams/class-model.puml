@@ -3,8 +3,6 @@ skinparam classAttributeIconSize 0
 title SpareB&B - Domain Model (readable split 1/2)
 
 interface Bookable {
-  + book(user: User, nights: int): void
-  + release(): void
   + isAvailable(): boolean
 }
 
@@ -19,10 +17,11 @@ abstract class Accommodation {
   + calculateCost(nights: int): double
   + getTypeName(): String
   + describe(): String
-  + book(user: User, nights: int): void
-  + release(): void
-  + finishCleaning(): void
-  + changeState(newState: AccommodationState): void
+  ~ book(user: User, nights: int): void
+  ~ release(): void
+  ~ finishCleaning(): void
+  ~ changeState(newState: AccommodationState): void
+  + isAvailable(): boolean
   + getFacilities(): List<Facility>
   + getStatusName(): String
 }
@@ -62,10 +61,11 @@ class User {
   - email: String
   - bookings: List<Booking>
   - loyaltyPoints: int
-  + addBooking(booking: Booking): void
-  + addPoints(points: int): void
-  + removePoints(points: int): void
+  ~ addBooking(booking: Booking): void
+  ~ addPoints(points: int): void
+  ~ removePoints(points: int): void
   + getBookings(): List<Booking>
+  + getLoyaltyPoints(): int
 }
 
 class Host {
@@ -84,7 +84,7 @@ class Booking {
   - nights: int
   - totalCost: double
   - active: boolean
-  + cancel(): void
+  ~ cancel(): void
   + isActive(): boolean
 }
 

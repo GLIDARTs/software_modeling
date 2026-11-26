@@ -1,15 +1,12 @@
-package sparebnb.service;
+package sparebnb.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import sparebnb.model.Accommodation;
-import sparebnb.model.AccommodationUnavailableException;
-import sparebnb.model.Booking;
-import sparebnb.model.User;
 
 /**
  * Control class that runs booking, release, and loyalty awarding.
+ * Same package as the model so it can call package-private mutators.
  * Same role as the lecturer's EnrollmentControl example.
  */
 public class BookingService {
@@ -28,9 +25,9 @@ public class BookingService {
   /**
    * Books an available place for a guest and awards loyalty points.
    *
-   * @param user          guest
+   * @param user guest
    * @param accommodation place to book
-   * @param nights        number of nights
+   * @param nights number of nights
    * @return the new booking
    * @throws AccommodationUnavailableException if the place cannot be booked
    * @throws IllegalArgumentException if arguments are invalid
@@ -46,7 +43,7 @@ public class BookingService {
       throw new IllegalArgumentException("Nights must be at least 1");
     }
 
-    // May throw AccommodationUnavailableException (already booked / cleaning)
+    // State change first; if this throws, no booking or points are created.
     accommodation.book(user, nights);
 
     double cost = accommodation.calculateCost(nights);
@@ -73,12 +70,13 @@ public class BookingService {
       throw new IllegalStateException(
           "Booking " + booking.getId() + " is already cancelled");
     }
-    booking.cancel();
+    // Release place first so a failure leaves the booking still active.
     booking.getAccommodation().release();
+    booking.cancel();
     booking.getUser().removePoints(POINTS_PER_NIGHT * booking.getNights());
   }
 
-  /** @return unmodifiable list of all bookings known to this service */
+  /** Returns an unmodifiable list of all bookings known to this service. */
   public List<Booking> getBookings() {
     return Collections.unmodifiableList(bookings);
   }

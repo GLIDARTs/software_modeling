@@ -1,0 +1,67 @@
+@startuml SpareBnB_Sequence_Book
+skinparam sequenceMessageAlign center
+autonumber
+
+actor Guest
+participant ":Main" as Main
+participant ":BookingService" as Service
+participant ":Accommodation" as Acc
+participant ":AccommodationState" as State
+participant ":Booking" as Booking
+participant ":User" as User
+
+Guest -> Main : choose place and nights
+activate Main
+Main -> Service : book(user, accommodation, nights)
+activate Service
+
+Service -> Acc : book(user, nights)
+activate Acc
+Acc -> State : book(accommodation, user, nights)
+activate State
+
+alt Available
+  State -> Acc : changeState(BookedState)
+  State --> Acc : void
+  deactivate State
+  Acc --> Service : void
+  deactivate Acc
+
+  Service -> Acc : calculateCost(nights)
+  activate Acc
+  Acc --> Service : cost
+  deactivate Acc
+
+  Service -> Booking : <<create>> new Booking(...)
+  activate Booking
+  Booking --> Service : booking
+  deactivate Booking
+
+  Service -> User : addBooking(booking)
+  activate User
+  User --> Service : void
+  deactivate User
+
+  Service -> User : addPoints(10 * nights)
+  activate User
+  User --> Service : void
+  deactivate User
+
+  Service --> Main : booking
+else Already booked or Cleaning
+  State --> Acc : throw AccommodationUnavailableException
+  deactivate State
+  Acc --> Service : exception
+  deactivate Acc
+  Service --> Main : exception
+end
+
+deactivate Service
+
+alt success
+  Main --> Guest : confirmation + loyalty points
+else failure
+  Main --> Guest : clear unavailable / cleaning message
+end
+deactivate Main
+@enduml

@@ -1,0 +1,33 @@
+@startuml SpareBnB_StateMachine
+left to right direction
+skinparam shadowing false
+
+[*] --> Available
+
+Available --> Booked : book()
+Booked --> Cleaning : release()
+Cleaning --> Available : finishCleaning()
+
+state Available {
+  Available : entry / guests may book
+  Available : release() refused
+  Available : finishCleaning() refused
+}
+
+state Booked {
+  Booked : entry / held by a guest
+  Booked : book() refused -> already booked
+  Booked : finishCleaning() refused
+}
+
+state Cleaning {
+  Cleaning : entry / waiting for host
+  Cleaning : book() refused -> being cleaned
+  Cleaning : release() refused
+}
+
+note right of Cleaning
+  Only the host can finish cleaning (US11)
+  so guests can book again.
+end note
+@enduml

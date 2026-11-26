@@ -1,0 +1,89 @@
+@startuml SpareBnB_Class_Patterns
+skinparam classAttributeIconSize 0
+title SpareB&B - Factory, State, Control, Main (readable split 2/2)
+
+package "sparebnb" {
+  class Main {
+    + {static} main(args: String[]): void
+  }
+}
+
+package "sparebnb.service" {
+  class BookingService {
+    - bookings: List<Booking>
+    - nextBookingNumber: int
+    + book(user: User, accommodation: Accommodation, nights: int): Booking
+    + release(booking: Booking): void
+    + getBookings(): List<Booking>
+  }
+}
+
+package "sparebnb.factory" {
+  class AccommodationFactory {
+    - {static} nextId: int
+    + {static} create(...): Accommodation
+  }
+
+  enum AccommodationType {
+    APARTMENT
+    VILLA
+    HOTEL_ROOM
+    SHARED_ROOM
+  }
+}
+
+package "sparebnb.model" {
+  abstract class Accommodation {
+    - state: AccommodationState
+    + book(user: User, nights: int): void
+    + release(): void
+    + finishCleaning(): void
+    + changeState(newState: AccommodationState): void
+  }
+
+  class Booking
+  class User
+  class Host
+  class AccommodationUnavailableException
+}
+
+package "sparebnb.state" {
+  interface AccommodationState {
+    + book(a: Accommodation, user: User, nights: int): void
+    + release(a: Accommodation): void
+    + finishCleaning(a: Accommodation): void
+    + isAvailable(): boolean
+    + getName(): String
+  }
+
+  class AvailableState
+  class BookedState
+  class CleaningState
+}
+
+AvailableState ..|> AccommodationState
+BookedState ..|> AccommodationState
+CleaningState ..|> AccommodationState
+
+' COMPOSITION (filled diamond): current state belongs to this accommodation
+Accommodation "1" *-- "1" AccommodationState : has current >
+note on link
+  Composition (filled diamond):
+  state object lifecycle owned by Accommodation
+end note
+
+BookingService "1" --> "0..*" Booking : tracks >
+BookingService ..> AccommodationUnavailableException : throws
+BookingService ..> User : awards / removes points
+Host ..> Accommodation : finishCleaning
+
+Main ..> BookingService : uses
+Main ..> AccommodationFactory : uses
+Main ..> Host : uses
+Main ..> User : uses
+Main ..> Accommodation : uses
+
+AccommodationFactory ..> AccommodationType : uses
+AccommodationFactory ..> Accommodation : creates
+
+@enduml

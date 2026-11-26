@@ -1,0 +1,111 @@
+@startuml SpareBnB_Class_Model
+skinparam classAttributeIconSize 0
+title SpareB&B - Domain Model (readable split 1/2)
+
+interface Bookable {
+  + book(user: User, nights: int): void
+  + release(): void
+  + isAvailable(): boolean
+}
+
+abstract class Accommodation {
+  - id: String
+  - name: String
+  - location: String
+  - pricePerNight: double
+  - maxGuests: int
+  - facilities: List<Facility>
+  - state: AccommodationState
+  + calculateCost(nights: int): double
+  + getTypeName(): String
+  + describe(): String
+  + book(user: User, nights: int): void
+  + release(): void
+  + finishCleaning(): void
+  + changeState(newState: AccommodationState): void
+  + getFacilities(): List<Facility>
+  + getStatusName(): String
+}
+
+class Apartment {
+  - floorNumber: int
+  + calculateCost(nights: int): double
+  + getTypeName(): String
+}
+
+class Villa {
+  - hasPool: boolean
+  + calculateCost(nights: int): double
+  + getTypeName(): String
+}
+
+class HotelRoom {
+  - breakfastIncluded: boolean
+  + calculateCost(nights: int): double
+  + getTypeName(): String
+}
+
+class SharedRoom {
+  - bedsInRoom: int
+  + calculateCost(nights: int): double
+  + getTypeName(): String
+}
+
+class Facility {
+  - name: String
+  + getName(): String
+}
+
+class User {
+  - id: String
+  - name: String
+  - email: String
+  - bookings: List<Booking>
+  - loyaltyPoints: int
+  + addBooking(booking: Booking): void
+  + addPoints(points: int): void
+  + removePoints(points: int): void
+  + getBookings(): List<Booking>
+}
+
+class Host {
+  - id: String
+  - name: String
+  - listings: List<Accommodation>
+  + addListing(a: Accommodation): void
+  + finishCleaning(a: Accommodation): void
+  + viewListingStatuses(): String
+}
+
+class Booking {
+  - id: String
+  - user: User
+  - accommodation: Accommodation
+  - nights: int
+  - totalCost: double
+  - active: boolean
+  + cancel(): void
+  + isActive(): boolean
+}
+
+class AccommodationUnavailableException
+
+Accommodation ..|> Bookable
+Apartment --|> Accommodation
+Villa --|> Accommodation
+HotelRoom --|> Accommodation
+SharedRoom --|> Accommodation
+
+' AGGREGATION (hollow diamond): Facility can exist independently
+Accommodation "1" o-- "0..*" Facility : includes >
+note on link
+  Aggregation (hollow diamond):
+  Wi-Fi can exist without a listing
+end note
+
+Booking "1" --> "1" User : has >
+Booking "1" --> "1" Accommodation : for >
+User "1" --> "0..*" Booking : has >
+Host "1" --> "0..*" Accommodation : manages >
+
+@enduml

@@ -1,0 +1,44 @@
+@startuml SpareBnB_UseCase
+left to right direction
+skinparam packageStyle rectangle
+
+actor Guest
+actor Host
+
+rectangle "SpareB&B" {
+  usecase "View Accommodation" as UC1
+  usecase "View Accommodation Details" as UC2
+  usecase "Book Accommodation" as UC3
+  usecase "Check Availability" as UC4
+  usecase "Cancel Booking" as UC5
+  usecase "View Availability" as UC6
+  usecase "View My Bookings" as UC7
+  usecase "View Facilities" as UC8
+  usecase "Earn Loyalty Points" as UC9
+  usecase "Finish Cleaning" as UC10
+  usecase "View Listing Status" as UC11
+}
+
+Guest --> UC1
+Guest --> UC2
+Guest --> UC3
+Guest --> UC5
+Guest --> UC6
+Guest --> UC7
+Guest --> UC8
+
+Host --> UC10
+Host --> UC11
+
+UC3 ..> UC4 : <<include>>
+UC3 <.. UC9 : <<extend>>
+
+note right of UC9
+  Loyalty points awarded
+  after a successful booking
+end note
+
+note right of UC10
+  Moves Cleaning -> Available
+end note
+@enduml
